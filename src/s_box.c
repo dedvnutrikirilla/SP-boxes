@@ -1,7 +1,7 @@
 #include"../inc/spboxing.h"
 
 // Used for better understanding of bit operations, better be deleted
-/*const uint8_t s_box2[16] = {
+/*const uint8_t s_box[16] = {
     0b1110,
     0b0100,
     0b1101,
