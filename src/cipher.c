@@ -6,6 +6,8 @@ int SIZE = 0;
 
 uint8_t *key_cutter() {
     int temp_key = KEY, size = 0;
+    if (KEY == 0) return NULL;
+
     while (temp_key > 0) {
         temp_key >>= 8;
         size++;
@@ -30,10 +32,12 @@ uint8_t cipher(uint8_t num) {
     for (int i = 0; i < ROUNDS; i++) {
         uint8_t temp = substitute(num);
 
-        temp ^= keyarr[key_index];
-        key_index++;
-        if(key_index >= SIZE)
-            key_index = 0;
+        if (KEY) {
+            temp ^= keyarr[key_index];
+            key_index++;
+            if(key_index >= SIZE)
+                key_index = 0;
+        }
         
         num = permutate(temp);
     }
@@ -44,18 +48,21 @@ uint8_t cipher(uint8_t num) {
 
 uint8_t decipher(uint8_t num) {
     uint8_t *keyarr = key_cutter();
-    short key_index = (ROUNDS % SIZE) - 1;
+    short key_index = SIZE > 0 ? (ROUNDS % SIZE) - 1 : 0;
     for (int i = 0; i < ROUNDS; i++) {
         uint8_t temp = de_permutate(num);
 
-        temp ^= keyarr[key_index];
-        key_index--;
-        if(key_index < 0)
-            key_index = SIZE - 1;
-
+        if (KEY) {
+            temp ^= keyarr[key_index];
+            key_index--;
+            if(key_index < 0)
+                key_index = SIZE - 1;
+        }
+        
         num = de_substitute(temp);
     }
     free(keyarr);
     printf("\n");
     return num;
 }
+
